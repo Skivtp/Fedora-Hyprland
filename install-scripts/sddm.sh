@@ -44,7 +44,7 @@ done
 
 # Check if other login managers are installed and disabling their service before enabling sddm
 for login_manager in "${login[@]}"; do
-  if sudo dnf list installed "$login_manager" > /dev/null; then
+  if sudo rpm-ostree list installed "$login_manager" > /dev/null; then
     echo "disabling $login_manager..."
     sudo systemctl disable "$login_manager.service" >> "$LOG" 2>&1
     echo "$login_manager disabled."
