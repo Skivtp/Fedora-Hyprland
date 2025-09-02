@@ -48,10 +48,10 @@ fi
 remove_packages() {
     local selected_packages_file=$1
     while read -r package; do
-        # Check if the package is installed using dnf
-        if dnf list installed "$package" &> /dev/null; then
+        # Check if the package is installed using rpm-ostree
+        if rpm-ostree list installed "$package" &> /dev/null; then
             echo "Removing package: $package"
-            if ! sudo dnf remove -y "$package"; then
+            if ! sudo rpm-ostree remove -y "$package"; then
                 echo "$ERROR Failed to remove package: $package"
             else
                 echo "$OK Successfully removed package: $package"
@@ -86,8 +86,8 @@ remove_directories() {
 # Function to safely remove COPR repositories
 remove_copr() {
     for repo in "$@"; do
-        if sudo dnf copr list | grep -q "$repo"; then
-            sudo dnf copr remove -y "$repo"
+        if sudo rpm-ostree copr list | grep -q "$repo"; then
+            sudo rpm-ostree copr remove -y "$repo"
         else
             # Print message in yellow when the repository is not enabled
             echo -e "${YELLOW}COPR repository $repo is not enabled, skipping.${RESET}"
@@ -240,7 +240,7 @@ while [ $ATTEMPT -lt $MAX_ATTEMPTS ]; do
     # Check if any packages still need to be removed, retry if needed
     MISSING_PACKAGE_COUNT=0
     while read -r package; do
-        if dnf list installed "$package" &> /dev/null; then
+        if rpm-ostree list installed "$package" &> /dev/null; then
             MISSING_PACKAGE_COUNT=$((MISSING_PACKAGE_COUNT + 1))
         fi
     done < /tmp/selected_packages.txt
