@@ -27,7 +27,7 @@ printf "\n%.0s" {1..1}
 if ! command -v git &> /dev/null
 then
     echo "${INFO} Git not found! ${SKY_BLUE}Installing Git...${RESET}"
-    if ! sudo dnf install -y git; then
+    if ! sudo rpm-ostree install -y git; then
         echo "${ERROR} Failed to install Git. Exiting."
         exit 1
     fi
